@@ -1,21 +1,51 @@
 import 'react-native-gesture-handler';
-import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableHighlight, Button } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/HomeScreen';
-import ChatScreen from '../screens/ChatScreen';
+import ChatRoomListScreen from '../screens/ChatRoomListScreen';
 import SettingScreen from '../screens/SettingScreen';
+import ChatScreen from '../screens/ChatScreen';
 import { Entypo, Ionicons } from '@expo/vector-icons';
+import * as shortid from 'shortid';
 
 const BottomTab = createBottomTabNavigator();
 const ChatStack = createStackNavigator();
 
+import io from 'socket.io-client';
+const socketClient = io('http://localhost:3000');
+
 const temp = () => {
+  const [messages, setMessages] = useState([]);
+
+  socketClient.on('chatMessage', (res) => {
+    // console.log('첫 메세지!!!', res);
+    let newMsg = res.map((message) => message.userChat);
+
+    setMessages([...messages, ...newMsg]);
+  });
+
   return (
-    <View>
-      <Text>temp입니다</Text>
-    </View>
+    <>
+      <TouchableHighlight
+        onPress={() => {
+          socketClient.emit('chatMessage', {
+            user_id: '하핫',
+            userChat: 'ㅋㅋㅋㅋㅋ',
+            chattingRoom_id: '1',
+          });
+        }}
+        underlayColor="red"
+      >
+        <Text>채팅보내기</Text>
+      </TouchableHighlight>
+      <View>
+        {messages.map((message) => (
+          <Text key={shortid.generate()}>{message}</Text>
+        ))}
+      </View>
+    </>
   );
 };
 
@@ -24,16 +54,19 @@ const routeChatStack = () => {
     <ChatStack.Navigator>
       <ChatStack.Screen
         name="home"
-        component={ChatScreen}
+        component={ChatRoomListScreen}
         options={{
           title: '채팅 홈 화면',
         }}
       />
       <ChatStack.Screen
         name="details"
-        component={temp}
+        component={ChatScreen}
         options={{
           title: '채팅 화면',
+          headerRight: () => (
+            <Button onPress={() => alert('This is a button!')} title="Info" color="#black" />
+          ),
         }}
       />
     </ChatStack.Navigator>
