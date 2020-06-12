@@ -17,7 +17,7 @@ const ChatStack = createStackNavigator();
 import io from 'socket.io-client';
 const socketClient = io('http://localhost:3000');
 
-const routeChatStack = () => {
+const routeChatStack = ({ navigation }) => {
   return (
     <ChatStack.Navigator>
       <ChatStack.Screen
@@ -32,9 +32,6 @@ const routeChatStack = () => {
         component={ChatScreen}
         options={{
           title: '채팅 화면',
-          headerRight: () => (
-            <Button onPress={() => socketClient.disconnect()} title="Info" color="black" />
-          ),
         }}
       />
     </ChatStack.Navigator>
