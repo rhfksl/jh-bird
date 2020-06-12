@@ -16,26 +16,46 @@ import * as shortid from 'shortid';
 import io from 'socket.io-client';
 const socketClient = io('http://localhost:3000');
 
-function ChatScreen({ navigation, user }) {
+function ChatScreen({ route, navigation, user, curRoomId, possible }) {
   const [messages, setMessages] = useState([]);
-  const { user_id, chattingRoom_id } = user;
+  const { user_id, nickname } = user;
+  const { chattingRoomId } = route.params;
 
-  const sendFirstConnection = () => {
-    console.log('보냅니닷');
-    socketClient.emit('joinRoom', user);
-  };
+  const curUser = {};
+  curUser.nickname = nickname;
+  curUser.chattingRoomId = chattingRoomId;
 
-  useEffect(() => {
-    console.log('입장하셨습니다');
-    sendFirstConnection();
-  }, []);
+  // disconnect when goback event happens
+  useEffect(() => navigation.addListener('blur', () => socketClient.disconnect(), []));
 
-  //   socketClient.on('firstConnection', (res) => {
-  //     let firstMsg = res.map((res) => res.userChat);
-  //     setMessages([...messages, ...firstMsg]);
-  //   });
+  // connect socket when enter this component
+  useEffect(
+    () =>
+      navigation.addListener(
+        'focus',
+        () => socketClient.connect(),
+        socketClient.emit(`joinRoom`, curUser)
+      ),
+    []
+  );
+
+  // get all messages at first
+  socketClient.on('firstMsg', (res) => {
+    const firstMsgArr = [];
+    res.forEach((msg) => {
+      const addMessage = (
+        <Text key={shortid.generate()}>
+          {msg.User.nickname}님의 말: {msg.userChat}
+        </Text>
+      );
+      firstMsgArr.push(addMessage);
+    });
+    setMessages([...messages, ...firstMsgArr]);
+  });
+
   socketClient.on('message', (res) => {
-    // console.log('메세지를 받아요', res);
+    console.log('메세지를 받아요', res);
+
     // let newMsg = res.map((message) => message.userChat);
     // setMessages([...messages, ...newMsg]);
   });
@@ -43,6 +63,7 @@ function ChatScreen({ navigation, user }) {
   const dismiss = () => {
     Keyboard.dismiss();
   };
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -63,32 +84,10 @@ function ChatScreen({ navigation, user }) {
           >
             <Text>새로운 채팅을 보내보잣</Text>
           </TouchableHighlight>
-          <TouchableHighlight
-            style={{ backgroundColor: 'blue', width: 70 }}
-            onPress={() => {
-              socketClient.disconnect();
-              //   socketClient.emit('disconnect');
-              console.log('get out');
-            }}
-            underlayColor="red"
-          >
-            <Text>나갈거에욧</Text>
-          </TouchableHighlight>
-          <TouchableHighlight
-            onPress={() => {
-              socketClient.connect();
-              //   socketClient.emit('disconnect');
-              console.log('get out');
-            }}
-            underlayColor="red"
-          >
-            <Text>다시 연결할거에욥</Text>
-          </TouchableHighlight>
-          <View>
-            {messages.map((message) => (
-              <Text key={shortid.generate()}>{message}</Text>
-            ))}
-          </View>
+
+          <Text>채팅시작</Text>
+          {messages}
+
           <TextInput
             style={{
               height: 40,
@@ -111,6 +110,7 @@ function ChatScreen({ navigation, user }) {
 function mapReduxStateToReactProps(state) {
   return {
     user: state.user,
+    curRoomId: state.curRoomId,
   };
 }
 

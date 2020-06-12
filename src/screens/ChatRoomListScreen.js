@@ -8,22 +8,26 @@ const socketClient = io('http://localhost:3000');
 
 const ChatStack = createStackNavigator();
 
-function ChatRoomListScreen({ navigation, allChatRooms }) {
+function ChatRoomListScreen({ navigation, allChatRooms, changeCurrentChattingRoomId }) {
   const [chatRoomLists, setChatRoomLists] = useState([]);
 
   const makeChatRoomComponent = (rooms) => {
     return (
       <TouchableOpacity
         key={shortid.generate()}
-        style={{ backgroundColor: 'yellow', height: 70 }}
-        onPress={(e) => {
-          navigation.navigate('details');
+        style={{ backgroundColor: 'yellow', height: 70, marginBottom: 10 }}
+        onPress={() => {
+          navigation.navigate('details', { chattingRoomId: rooms.chattingRoomId });
         }}
       >
         <Text>{rooms.roomname}</Text>
       </TouchableOpacity>
     );
   };
+
+  useEffect(() => {
+    console.log('항상 실행될까요??');
+  });
 
   useEffect(() => {
     const newRoomLists = [];
@@ -33,17 +37,7 @@ function ChatRoomListScreen({ navigation, allChatRooms }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: 'green' }}>
-      <ScrollView>
-        <TouchableOpacity
-          style={{ backgroundColor: 'yellow', height: 70 }}
-          onPress={(e) => {
-            navigation.navigate('details');
-          }}
-        >
-          <Text>이거 방탄유리아</Text>
-        </TouchableOpacity>
-        {chatRoomLists}
-      </ScrollView>
+      <ScrollView>{chatRoomLists}</ScrollView>
     </View>
   );
 }
@@ -54,4 +48,12 @@ function mapReduxStateToReactProps(state) {
   };
 }
 
-export default connect(mapReduxStateToReactProps)(ChatRoomListScreen);
+function mapDispatchToProps(dispatch) {
+  return {
+    changeCurrentChattingRoomId: (data) => {
+      dispatch({ type: 'CHANGE_CURRENT_CHATTING_ROOM', payload: data });
+    },
+  };
+}
+
+export default connect(mapReduxStateToReactProps, mapDispatchToProps)(ChatRoomListScreen);
