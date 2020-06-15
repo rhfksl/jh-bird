@@ -26,10 +26,6 @@ function ChatRoomListScreen({ navigation, allChatRooms, changeCurrentChattingRoo
   };
 
   useEffect(() => {
-    console.log('항상 실행될까요??');
-  });
-
-  useEffect(() => {
     const newRoomLists = [];
     allChatRooms.forEach((room) => newRoomLists.push(makeChatRoomComponent(room)));
     setChatRoomLists([...chatRoomLists, ...newRoomLists]);
