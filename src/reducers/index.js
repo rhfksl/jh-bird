@@ -1,7 +1,7 @@
 const initialState = {
   user: {
+    id: '',
     user_id: 'asdf',
-    chattingRoom_id: 1,
     nickname: '고라니',
   },
   userData: {
@@ -17,6 +17,12 @@ const reducers = (state = initialState, action) => {
       return {
         ...state,
         userData: action.payload,
+      };
+    }
+    case 'GET_USER_INFO': {
+      return {
+        ...state,
+        user: action.payload,
       };
     }
     case 'CHANGE_CURRENT_CHATTING_ROOM': {

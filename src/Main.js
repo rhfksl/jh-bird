@@ -7,7 +7,7 @@ import BottomTabStackScreen from './routers/BottomTabStackScreen';
 
 function Main(props) {
   useEffect(() => {
-    const { changeUserData } = props;
+    const { changeUserData, changeUserInfo } = props;
 
     // request user Data
     fetch('http://localhost:3000/users/datas', {
@@ -20,7 +20,8 @@ function Main(props) {
       .then((response) => response.json())
       .then((res) => {
         // insert chats and friendsLists in store
-        changeUserData(res);
+        changeUserInfo(res.user);
+        changeUserData({ friendLists: res.friendLists, allChatRooms: res.allChatRooms });
       })
       .catch((err) => console.log(err));
   }, []);
@@ -38,6 +39,9 @@ function mapDispatchToProps(dispatch) {
   return {
     changeUserData: (data) => {
       dispatch({ type: 'GET_USER_DATA', payload: data });
+    },
+    changeUserInfo: (data) => {
+      dispatch({ type: 'GET_USER_INFO', payload: data });
     },
   };
 }
