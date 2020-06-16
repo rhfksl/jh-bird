@@ -8,28 +8,31 @@ const socketClient = io('http://localhost:3000');
 
 const ChatStack = createStackNavigator();
 
-function ChatRoomListScreen({ navigation, allChatRooms, changeCurrentChattingRoomId }) {
+function ChatRoomListScreen({ navigation, allMessages, changeCurrentChattingRoomId }) {
   const [chatRoomLists, setChatRoomLists] = useState([]);
 
-  const makeChatRoomComponent = (rooms) => {
+  const makeChatRoomComponent = (roomId, values) => {
     return (
       <TouchableOpacity
         key={shortid.generate()}
         style={{ backgroundColor: 'yellow', height: 70, marginBottom: 10 }}
         onPress={() => {
-          navigation.navigate('details', { chattingRoomId: rooms.chattingRoomId });
+          navigation.navigate('details', { chattingRoomId: roomId });
         }}
       >
-        <Text>{rooms.roomname}</Text>
+        <Text>{values.roomname}</Text>
       </TouchableOpacity>
     );
   };
 
   useEffect(() => {
     const newRoomLists = [];
-    allChatRooms.forEach((room) => newRoomLists.push(makeChatRoomComponent(room)));
+
+    for (let [roomId, value] of Object.entries(allMessages)) {
+      newRoomLists.push(makeChatRoomComponent(roomId, value));
+    }
     setChatRoomLists([...chatRoomLists, ...newRoomLists]);
-  }, [allChatRooms]);
+  }, []);
 
   return (
     <View style={{ flex: 1, backgroundColor: 'green' }}>
@@ -40,7 +43,7 @@ function ChatRoomListScreen({ navigation, allChatRooms, changeCurrentChattingRoo
 
 function mapReduxStateToReactProps(state) {
   return {
-    allChatRooms: state.userData.allChatRooms,
+    allMessages: state.allMessages,
   };
 }
 
