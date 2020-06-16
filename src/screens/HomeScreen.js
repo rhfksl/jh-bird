@@ -24,7 +24,7 @@ function HomeScreen(props) {
 
 function mapReduxStateToReactProps(state) {
   return {
-    friendLists: state.userData.friendLists,
+    friendLists: state.friendLists,
   };
 }
 

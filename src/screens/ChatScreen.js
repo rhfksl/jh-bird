@@ -18,12 +18,20 @@ import * as shortid from 'shortid';
 import io from 'socket.io-client';
 const socketClient = io('http://localhost:3000');
 
-function ChatScreen({ route, navigation, user, allChatRooms }) {
+function ChatScreen({ route, navigation, user, allMessages }) {
   const [messages, setMessages] = useState([]);
   const [text, onChangeText] = useState('');
 
   const { id, user_id, nickname } = user;
   const { chattingRoomId } = route.params;
+
+  const makeMessageNode = (message) => {
+    return (
+      <Text key={shortid.generate()}>
+        {message.nickname}님의 말: {message.userChat}
+      </Text>
+    );
+  };
 
   useEffect(() => {
     // disconnect when goback event happens
@@ -32,44 +40,48 @@ function ChatScreen({ route, navigation, user, allChatRooms }) {
     navigation.addListener('focus', () => {
       socketClient.connect();
 
+      // connect socket to selected chatting room
       const curUser = {};
       curUser.nickname = nickname;
       curUser.chattingRoomId = chattingRoomId;
       socketClient.emit(`joinRoom`, curUser);
     });
-    let renderMessages = allChatRooms
-      .filter((room) => room.chattingRoomId === chattingRoomId)[0]
-      .messages.map((msg) => {
-        return (
-          <Text key={shortid.generate()}>
-            {msg.nickname}님의 말: {msg.userChat}
-          </Text>
-        );
-      });
+
+    // renderAllMessages at first
+    let renderMessages = allMessages[chattingRoomId].messages.map(makeMessageNode);
     setMessages(renderMessages);
   }, []);
 
-  socketClient.on('message', (res) => {
-    console.log('메세지를 받아요', res);
-
-    // let newMsg = res.map((message) => message.userChat);
-    // setMessages([...messages, ...newMsg]);
-  });
+  useEffect(() => {
+    // added renewed message to view
+    setMessages(allMessages[chattingRoomId].messages.map(makeMessageNode));
+  }, [allMessages[chattingRoomId]]);
 
   const dismiss = () => {
     Keyboard.dismiss();
   };
 
-  const postMessages = (e) => {
+  const postMessages = () => {
     // 필요 chattingRoomId, userId, userChat
     const message = {};
     message.userId = id;
+    message.nickname = nickname;
     message.chattingRoomId = chattingRoomId;
     message.userChat = text;
-    // socketClient.emit('message', message);
-    // console.log('msg', message);
-    // e.firstChild.value = '';
+
+    // send message to socket server
+    socketClient.emit('message', message);
+
+    // reset text input
     onChangeText('');
+  };
+
+  const test = () => {
+    const message = {};
+    message.userId = id;
+    message.chattingRoomId = chattingRoomId;
+    message.userChat = '제발좀 보내줘....';
+    socketClient.emit('message', message);
   };
 
   return (
@@ -110,6 +122,13 @@ function ChatScreen({ route, navigation, user, allChatRooms }) {
               onPress={postMessages}
             />
           </View>
+          <AntDesign
+            name="caretcircleoup"
+            size={32}
+            color="black"
+            style={{ marginTop: 4, alignSelf: 'center' }}
+            onPress={test}
+          />
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -120,7 +139,7 @@ function mapReduxStateToReactProps(state) {
   return {
     user: state.user,
     curRoomId: state.curRoomId,
-    allChatRooms: state.userData.allChatRooms,
+    allMessages: state.allMessages,
   };
 }
 
