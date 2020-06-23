@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import Main from './Main';
+import { blue } from 'color-name';
 // createSwitchNavigator(RouteConfigs, SwitchNavigatorConfig);
 
 const Switch = () => {
@@ -16,14 +17,15 @@ const Switch = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [nickname, setNickname] = useState('');
+  const [user, setUser] = useState();
 
-  const signUp = () => {
+  const requestFetch = (url) => {
     const userObj = {};
     userObj.user_id = id;
     userObj.password = password;
     userObj.nickname = nickname;
 
-    fetch('http://127.0.0.1:3000/users', {
+    fetch(`http://127.0.0.1:3000/users/${url}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -32,10 +34,11 @@ const Switch = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        if (res.body === '유저가 이미 존재합니다' || res.body === '닉네임이 이미 존재합니다') {
-          alert(res.body);
-        } else {
+        if (Object.keys(res)[0] === 'user_id') {
+          setUser(res);
           setIsLogin(true);
+        } else {
+          alert(res.body);
         }
       });
   };
@@ -62,13 +65,16 @@ const Switch = () => {
             onChangeText={(text) => setNickname(text)}
             placeholder="닉네임을 입력하세요"
           />
-          <Button title="goRoom" onPress={() => signUp()} />
+          <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+            <Button title="Sign Up" onPress={() => requestFetch('signUp')} />
+            <Button title="Login" onPress={() => requestFetch('login')} />
+          </View>
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 
-  return isLogin ? <Main /> : Login;
+  return isLogin ? <Main user={user} /> : Login;
 };
 
 const styles = StyleSheet.create({
