@@ -1,12 +1,11 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 import Main from './src/Main';
-import { NavigationContainer } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native';
-import BottomTabStackScreen from './src/routers/BottomTabStackScreen';
+import Switch from './src/Switch';
 
+// set redux store
 import { createStore } from 'redux';
-import { Provider, connect } from 'react-redux';
+import { Provider } from 'react-redux';
 import reducers from './src/reducers';
 
 const store = createStore(
@@ -17,21 +16,8 @@ const store = createStore(
 export default function App() {
   return (
     <Provider store={store}>
-      <Main />
-      {/* <NavigationContainer>
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
-          <BottomTabStackScreen />
-        </SafeAreaView>
-      </NavigationContainer> */}
+      <Switch></Switch>
+      {/* <Main /> */}
     </Provider>
   );
 }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });

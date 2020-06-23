@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native';
 import BottomTabStackScreen from './routers/BottomTabStackScreen';
 
 import io from 'socket.io-client';
-const socketClient = io('http://localhost:3000');
+const socketClient = io('http://127.0.0.1:3000');
 
 function Main({
   changeFriendLists,
@@ -17,7 +17,8 @@ function Main({
 }) {
   useEffect(() => {
     // request user Data
-    fetch('http://localhost:3000/users/datas', {
+    fetch('http://127.0.0.1:3000/users/datas', {
+      // fetch('http://localhost:3000/users/datas', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

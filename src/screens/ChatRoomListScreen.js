@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 import io from 'socket.io-client';
 import shortid from 'shortid';
-const socketClient = io('http://localhost:3000');
+// const socketClient = io('http://localhost:3000');
 
 const ChatStack = createStackNavigator();
 
