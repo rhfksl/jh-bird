@@ -14,8 +14,10 @@ function Main({
   changeUserInfo,
   changeCurrentChatRooms,
   addMessageToChattingRoom,
+  user,
 }) {
   useEffect(() => {
+    console.log('check', user);
     // request user Data
     fetch('http://127.0.0.1:3000/users/datas', {
       // fetch('http://localhost:3000/users/datas', {
@@ -23,7 +25,7 @@ function Main({
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user_id: 'asdf' }),
+      body: JSON.stringify({ user_id: user.user_id }),
     })
       .then((response) => response.json())
       .then((res) => {
