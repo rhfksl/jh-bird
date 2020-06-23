@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import {
   StyleSheet,
@@ -9,18 +9,24 @@ import {
   ScrollView,
   Button,
   TextInput,
+  FlatList,
+  KeyboardAvoidingView,
   TouchableWithoutFeedback,
+  Item,
   Keyboard,
 } from 'react-native';
+import { GiftedChat } from 'react-native-gifted-chat';
 import { AntDesign } from '@expo/vector-icons';
 import * as shortid from 'shortid';
 
 import io from 'socket.io-client';
-const socketClient = io('http://localhost:3000');
+const socketClient = io('http://127.0.0.1:3000');
 
 function ChatScreen({ route, navigation, user, allMessages }) {
   const [messages, setMessages] = useState([]);
   const [text, onChangeText] = useState('');
+
+  let flatList = useRef();
 
   const { id, user_id, nickname } = user;
   const { chattingRoomId } = route.params;
@@ -54,7 +60,8 @@ function ChatScreen({ route, navigation, user, allMessages }) {
 
   useEffect(() => {
     // added renewed message to view
-    setMessages(allMessages[chattingRoomId].messages.map(makeMessageNode));
+    // setMessages(allMessages[chattingRoomId].messages.map(makeMessageNode));
+    // flatList.current.scrollToEnd();
   }, [allMessages[chattingRoomId]]);
 
   const dismiss = () => {
@@ -76,62 +83,91 @@ function ChatScreen({ route, navigation, user, allMessages }) {
     onChangeText('');
   };
 
-  const test = () => {
-    const message = {};
-    message.userId = id;
-    message.chattingRoomId = chattingRoomId;
-    message.userChat = '제발좀 보내줘....';
-    socketClient.emit('message', message);
+  const flatItem = (message) => {
+    return (
+      <Text key={shortid.generate()} style={{ backgroundColor: 'blue' }}>
+        {message.nickname}님의 말: {message.userChat}
+      </Text>
+    );
+  };
+
+  const getItemLayout = (data, index) => {
+    return { length: data.length, offset: data.length * index, index };
   };
 
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        dismiss();
-      }}
-    >
-      <View style={{ height: '100%', backgroundColor: 'gray' }}>
-        <View style={{ backgroundColor: 'red' }}>
-          {messages}
+    <>
+      {/* <View style={{ backgroundColor: 'gray', flex: 1 }}> */}
+      {/* <KeyboardAvoidingView
+          behavior="position"
+          enabled
+          style={{ display: 'flex', flex: 1, flexGrow: 1, backgroundColor: 'green' }}
+        > */}
+      <KeyboardAvoidingView
+        // behavior={Platform.OS == 'ios' ? 'position' : 'height'}
+        behavior="position"
+        keyboardVerticalOffset={60}
+        style={{ flex: 1, backgroundColor: 'green' }}
+      >
+        <TouchableWithoutFeedback
+          onPress={Keyboard.dismiss}
+          style={{ backgroundColor: 'yellow', display: 'flex' }}
+        >
+          <FlatList
+            ref={flatList}
+            getItemLayout={getItemLayout}
+            initialScrollIndex={allMessages[chattingRoomId].messages.length - 1}
+            onContentSizeChange={() => flatList.current.scrollToEnd({ animated: false })}
+            data={allMessages[chattingRoomId].messages}
+            renderItem={({ item }) => flatItem(item)}
+            keyExtractor={(item) => item.id.toString()}
+            style={{ height: '90%', display: 'flex', backgroundColor: 'yellow' }}
+            // contentContainerStyle={{
+            //   display: 'flex',
+            //   justifyContent: 'flex-end',
+            //   flex: 1,
+            // }}
+          />
+        </TouchableWithoutFeedback>
 
-          <View style={{ backgroundColor: 'purple', display: 'flex', flexDirection: 'row' }}>
-            <TextInput
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-end',
-                flexGrow: 1,
-                height: 30,
-                backgroundColor: 'white',
-                // borderColor: 'tomato',
-                borderWidth: 1,
-                marginLeft: 20,
-                // marginHorizontal: 20,
-                marginVertical: 10,
-                paddingHorizontal: 10,
-              }}
-              onChangeText={(text) => onChangeText(text)}
-              value={text}
-              placeholder="채팅을 입력하세요"
-            ></TextInput>
-            <AntDesign
-              name="caretcircleoup"
-              size={32}
-              color="black"
-              style={{ marginTop: 4, alignSelf: 'center' }}
-              onPress={postMessages}
-            />
-          </View>
+        {/* <View style={{ backgroundColor: 'red', height: '50%' }}>{messages}</View> */}
+        {/* <KeyboardAvoidingView
+          behavior="padding"
+          enabled
+          keyboardVerticalOffset={60}
+          style={{ backgroundColor: 'yellow', flex: 1 }}
+        > */}
+        <View style={{ backgroundColor: 'purple', height: '10%', flexDirection: 'row' }}>
+          <TextInput
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-end',
+              flexGrow: 1,
+              height: 30,
+              backgroundColor: 'white',
+              // borderColor: 'tomato',
+              borderWidth: 1,
+              marginLeft: 20,
+              // marginHorizontal: 20,
+              marginVertical: 10,
+              paddingHorizontal: 10,
+            }}
+            onChangeText={(text) => onChangeText(text)}
+            value={text}
+            placeholder="채팅을 입력하세요"
+          ></TextInput>
           <AntDesign
             name="caretcircleoup"
             size={32}
             color="black"
             style={{ marginTop: 4, alignSelf: 'center' }}
-            onPress={test}
+            onPress={postMessages}
           />
         </View>
-      </View>
-    </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+      {/* </View> */}
+    </>
   );
 }
 
