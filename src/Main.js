@@ -17,10 +17,8 @@ function Main({
   user,
 }) {
   useEffect(() => {
-    console.log('check', user);
     // request user Data
     fetch('http://127.0.0.1:3000/users/datas', {
-      // fetch('http://localhost:3000/users/datas', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -41,7 +39,6 @@ function Main({
         // connect socketIo to all current chat rooms
         socketClient.connect();
 
-        // const currentChatRooms = res.allChatRooms.map((room) => room.chattingRoomId);
         const currentChatRooms = Object.keys(res.allChatRooms);
         for (const room of currentChatRooms) {
           user.chattingRoomId = room;
