@@ -15,7 +15,7 @@ const reducers = (state = initialState, action) => {
     case 'CHANGE_FRIEND_LISTS': {
       return {
         ...state,
-        friendLists: action.payload,
+        friendLists: [...state.friendLists, ...action.payload],
       };
     }
     case 'CHANGE_ALL_MESSAGES': {
