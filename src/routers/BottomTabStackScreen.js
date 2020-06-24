@@ -7,6 +7,7 @@ import HomeScreen from '../screens/HomeScreen';
 import ChatRoomListScreen from '../screens/ChatRoomListScreen';
 import SettingScreen from '../screens/SettingScreen';
 import ChatScreen from '../screens/ChatScreen';
+import ChattingScreen from '../screens/ChattingScreen';
 import { connect } from 'react-redux';
 import { Entypo, Ionicons } from '@expo/vector-icons';
 import * as shortid from 'shortid';
@@ -28,8 +29,8 @@ const routeChatStack = ({ navigation }) => {
         }}
       />
       <ChatStack.Screen
-        name="details"
-        component={ChatScreen}
+        name="chatting"
+        component={ChattingScreen}
         options={{
           title: '채팅 화면',
         }}

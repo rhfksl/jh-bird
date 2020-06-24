@@ -17,7 +17,7 @@ function ChatRoomListScreen({ navigation, allMessages, changeCurrentChattingRoom
         key={shortid.generate()}
         style={{ backgroundColor: 'yellow', height: 70, marginBottom: 10 }}
         onPress={() => {
-          navigation.navigate('details', { chattingRoomId: roomId });
+          navigation.navigate('chatting', { chattingRoomId: roomId });
         }}
       >
         <Text>{values.roomname}</Text>

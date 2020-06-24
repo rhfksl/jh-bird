@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, View } from 'react-native';
+
 import io from 'socket.io-client';
 const socketClient = io('http://127.0.0.1:3000');
 
 import { GiftedChat } from 'react-native-gifted-chat';
-// import { set } from 'react-native-reanimated';
 
-const SettingScreen = ({ user, navigation, allMessages }) => {
-  const chattingRoomId = 2;
+const ChattingScreen = ({ user, navigation, allMessages, route }) => {
+  const { chattingRoomId } = route.params;
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -21,7 +20,7 @@ const SettingScreen = ({ user, navigation, allMessages }) => {
       // connect socket to selected chatting room
       const curUser = {};
       curUser.nickname = user.nickname;
-      curUser.chattingRoomId = 2;
+      curUser.chattingRoomId = chattingRoomId;
       socketClient.emit(`joinRoom`, curUser);
     });
   }, []);
@@ -33,7 +32,7 @@ const SettingScreen = ({ user, navigation, allMessages }) => {
   }, [allMessages]);
 
   const onSend = (newMsg = []) => {
-    newMsg[0].chattingRoomId = 2;
+    newMsg[0].chattingRoomId = chattingRoomId;
     socketClient.emit('message', newMsg[0]);
   };
 
@@ -58,4 +57,4 @@ function mapReduxStateToReactProps(state) {
   };
 }
 
-export default connect(mapReduxStateToReactProps)(SettingScreen);
+export default connect(mapReduxStateToReactProps)(ChattingScreen);

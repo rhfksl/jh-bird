@@ -6,7 +6,7 @@ const initialState = {
   },
 
   friendLists: [],
-  allMessages: [],
+  allMessages: {},
   currentChatRooms: [],
 };
 
@@ -37,18 +37,13 @@ const reducers = (state = initialState, action) => {
       };
     }
     case 'ADD_MESSAGE_TO_CHATTING_ROOM': {
-      // const temp = state.allMessages.slice();
-      // for (let i = 0; temp.length; i++) {
-      //   // console.log('이게 먼데 대체', state.allMessages);
-      //   if (temp[i].chattingRoomId === action.payload.chattingRoomId) {
-      //     // const temp =
-      //     // temp[i].messages.push(action.payload);
-      //     console.log('store state', temp);
-      //     return { ...state, allMessages: [...state.allMessages] };
-      //   }
-      // }
       const curRoomId = action.payload.chattingRoomId;
-      const addMessagesArr = [...state.allMessages[curRoomId].messages.slice(), action.payload];
+      let addMessagesArr;
+      if (!state.allMessages[curRoomId]) {
+        addMessagesArr = [action.payload];
+      } else {
+        addMessagesArr = [action.payload, ...state.allMessages[curRoomId].messages.slice()];
+      }
       return {
         ...state,
         allMessages: {
@@ -58,16 +53,6 @@ const reducers = (state = initialState, action) => {
             messages: addMessagesArr,
           },
         },
-        // allMessages: state.allMessages.map((room) => {
-        //   if (room.chattingRoomId === action.payload.chattingRoomId) {
-        //     return {
-        //       ...room,
-        //       messages: [...room.messages, action.payload],
-        //     };
-        //   } else {
-        //     return room;
-        //   }
-        // }),
       };
     }
 
