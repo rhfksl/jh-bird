@@ -30,29 +30,38 @@ function Main({
         // insert chats and friendsLists in store
         changeUserInfo(res.user);
         changeFriendLists(res.friendLists);
+
+        // reverse all messages for ordering chatting messages
+        Object.values(res.allChatRooms).forEach((room) => {
+          room.messages.reverse();
+        });
+
         changeAllMessages(res.allChatRooms);
 
         // would-be user for connecting
         const user = {};
         user.nickname = res.user.nickname;
 
-        // connect socketIo to all current chat rooms
+        // connect socketIo to all friends
         socketClient.connect();
+        socketClient.emit(`joinRoom`, { nickname: res.user.nickname, chattingRoomId: res.user.id });
 
-        const currentChatRooms = Object.keys(res.allChatRooms);
-        for (const room of currentChatRooms) {
-          user.chattingRoomId = room;
-          socketClient.emit(`joinRoom`, user);
+        for (let friend of res.friendLists) {
+          const connectObj = {};
+          connectObj.chattingRoomId = friend.id;
+          connectObj.nickname = res.user.nickname;
+
+          socketClient.emit(`joinRoom`, connectObj);
         }
 
         // add current rooms in store
-        changeCurrentChatRooms(currentChatRooms);
+        changeCurrentChatRooms(Object.keys(res.allChatRooms));
       })
       .catch((err) => console.log(err));
   }, []);
 
   socketClient.on('message', (message) => {
-    //정리하자 스토어
+    // get messages in real time
     addMessageToChattingRoom(message);
   });
 
