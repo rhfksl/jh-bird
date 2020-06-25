@@ -38,11 +38,19 @@ const reducers = (state = initialState, action) => {
     }
     case 'ADD_MESSAGE_TO_CHATTING_ROOM': {
       const curRoomId = action.payload.chattingRoomId;
-      let addMessagesArr;
+      // change room list order
+
+      let addMessagesArr, currentChatRooms;
       if (!state.allMessages[curRoomId]) {
         addMessagesArr = [action.payload];
+        currentChatRooms = [curRoomId, ...state.currentChatRooms];
       } else {
         addMessagesArr = [action.payload, ...state.allMessages[curRoomId].messages.slice()];
+        // change room list order(place latest chat room to the top)
+        currentChatRooms = state.currentChatRooms.slice();
+        let currentChatRoomsIdx = currentChatRooms.indexOf(curRoomId);
+        currentChatRooms.splice(currentChatRoomsIdx, 1);
+        currentChatRooms.unshift(curRoomId);
       }
       return {
         ...state,
@@ -53,6 +61,7 @@ const reducers = (state = initialState, action) => {
             messages: addMessagesArr,
           },
         },
+        currentChatRooms: currentChatRooms,
       };
     }
 

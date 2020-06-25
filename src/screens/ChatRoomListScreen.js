@@ -8,10 +8,15 @@ import shortid from 'shortid';
 
 const ChatStack = createStackNavigator();
 
-function ChatRoomListScreen({ navigation, allMessages, changeCurrentChattingRoomId }) {
+function ChatRoomListScreen({
+  navigation,
+  allMessages,
+  currentChatRooms,
+  changeCurrentChattingRoomId,
+}) {
   const [chatRoomLists, setChatRoomLists] = useState([]);
 
-  const makeChatRoomComponent = (roomId, values) => {
+  const makeChatRoomComponent = (roomId, roomname) => {
     return (
       <TouchableOpacity
         key={shortid.generate()}
@@ -20,19 +25,28 @@ function ChatRoomListScreen({ navigation, allMessages, changeCurrentChattingRoom
           navigation.navigate('chatting', { chattingRoomId: roomId });
         }}
       >
-        <Text>{values.roomname}</Text>
+        <Text>{roomname}</Text>
       </TouchableOpacity>
     );
   };
 
   useEffect(() => {
     const newRoomLists = [];
-
     for (let [roomId, value] of Object.entries(allMessages)) {
       newRoomLists.push(makeChatRoomComponent(roomId, value));
     }
     setChatRoomLists([...chatRoomLists, ...newRoomLists]);
   }, []);
+
+  useEffect(() => {
+    if (currentChatRooms.length) {
+      const changeRoomOrder = [];
+      for (let room of currentChatRooms) {
+        changeRoomOrder.push(makeChatRoomComponent(room, allMessages[room].roomname));
+      }
+      setChatRoomLists(changeRoomOrder);
+    }
+  }, [currentChatRooms]);
 
   return (
     <View style={{ flex: 1, backgroundColor: 'green' }}>
@@ -44,6 +58,7 @@ function ChatRoomListScreen({ navigation, allMessages, changeCurrentChattingRoom
 function mapReduxStateToReactProps(state) {
   return {
     allMessages: state.allMessages,
+    currentChatRooms: state.currentChatRooms,
   };
 }
 
