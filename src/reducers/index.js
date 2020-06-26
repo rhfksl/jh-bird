@@ -8,6 +8,7 @@ const initialState = {
   friendLists: [],
   allMessages: {},
   currentChatRooms: [],
+  hideBottomTab: true,
 };
 
 const reducers = (state = initialState, action) => {
@@ -62,6 +63,13 @@ const reducers = (state = initialState, action) => {
           },
         },
         currentChatRooms: currentChatRooms,
+      };
+    }
+
+    case 'HIDE_BOTTOM_TAB': {
+      return {
+        ...state,
+        hideBottomTab: !state.hideBottomTab,
       };
     }
 

@@ -8,12 +8,7 @@ import shortid from 'shortid';
 
 const ChatStack = createStackNavigator();
 
-function ChatRoomListScreen({
-  navigation,
-  allMessages,
-  currentChatRooms,
-  changeCurrentChattingRoomId,
-}) {
+function ChatRoomListScreen({ navigation, allMessages, currentChatRooms }) {
   const [chatRoomLists, setChatRoomLists] = useState([]);
 
   const makeChatRoomComponent = (roomId, roomname) => {
@@ -62,12 +57,4 @@ function mapReduxStateToReactProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    changeCurrentChattingRoomId: (data) => {
-      dispatch({ type: 'CHANGE_CURRENT_CHATTING_ROOM', payload: data });
-    },
-  };
-}
-
-export default connect(mapReduxStateToReactProps, mapDispatchToProps)(ChatRoomListScreen);
+export default connect(mapReduxStateToReactProps)(ChatRoomListScreen);

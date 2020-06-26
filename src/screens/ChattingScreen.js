@@ -6,17 +6,21 @@ const socketClient = io('http://127.0.0.1:3000');
 
 import { GiftedChat } from 'react-native-gifted-chat';
 
-const ChattingScreen = ({ user, navigation, allMessages, route }) => {
+const ChattingScreen = ({ user, navigation, allMessages, route, changeHideBottomTabStatus }) => {
   const { chattingRoomId } = route.params;
   const [messages, setMessages] = useState([]);
+  // console.log('this is navigation', navigation);
 
   useEffect(() => {
     // disconnect when goback event happens
-    navigation.addListener('blur', () => socketClient.disconnect());
+    navigation.addListener('blur', () => {
+      socketClient.disconnect();
+      changeHideBottomTabStatus();
+    });
     // connect socket when enter this component
     navigation.addListener('focus', () => {
+      changeHideBottomTabStatus();
       socketClient.connect();
-
       // connect socket to selected chatting room
       const curUser = {};
       curUser.nickname = user.nickname;
@@ -57,4 +61,12 @@ function mapReduxStateToReactProps(state) {
   };
 }
 
-export default connect(mapReduxStateToReactProps)(ChattingScreen);
+function mapDispatchToProps(dispatch) {
+  return {
+    changeHideBottomTabStatus: () => {
+      dispatch({ type: 'HIDE_BOTTOM_TAB' });
+    },
+  };
+}
+
+export default connect(mapReduxStateToReactProps, mapDispatchToProps)(ChattingScreen);
