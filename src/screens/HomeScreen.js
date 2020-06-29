@@ -12,83 +12,56 @@ import { connect } from 'react-redux';
 import * as shortid from 'shortid';
 import { AntDesign } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
+import AddFriend from './Modal/AddFriend';
 
-function HomeScreen({ friendLists, user, changeFriendLists }) {
+function HomeScreen({ friendLists, user, changeFriendLists, navigation }) {
   const [friends, setFriendLists] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [text, onChangeText] = useState('');
+  // const [text, onChangeText] = useState('');
 
   // insert friendLists from store into state variable
   useEffect(() => {
     setFriendLists(friendLists);
   }, [friendLists]);
 
-  const addFriend = () => {
-    const checkFriendArr = friendLists.map((friend) => friend.nickname);
-    if (checkFriendArr.includes(text)) {
-      alert('이미 추가된 닉네임입니다');
-      return;
-    }
-    const body = { myNickname: user.nickname, friendNickname: text };
-    fetch('http://127.0.0.1:3000/friendLists/addFriend', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((res) => {
-        if (res.body === 'not exist') {
-          alert('존재하지 않는 닉네임입니다');
-        } else {
-          changeFriendLists([res.body]);
-          onChangeText('');
-        }
-      })
-      .catch((err) => console.log(err));
-  };
+  // const addFriend = () => {
+  //   const checkFriendArr = friendLists.map((friend) => friend.nickname);
+  //   if (checkFriendArr.includes(text)) {
+  //     alert('이미 추가된 닉네임입니다');
+  //     return;
+  //   }
+  //   const body = { myNickname: user.nickname, friendNickname: text };
+  //   fetch('http://127.0.0.1:3000/friendLists/addFriend', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify(body),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((res) => {
+  //       if (res.body === 'not exist') {
+  //         alert('존재하지 않는 닉네임입니다');
+  //       } else {
+  //         changeFriendLists([res.body]);
+  //         onChangeText('');
+  //       }
+  //     })
+  //     .catch((err) => console.log(err));
+  //   };
 
   return (
     <>
       <View style={{ flex: 1, backgroundColor: 'yellow' }}>
-        <Modal animationType="slide" transparent={true} visible={modalVisible}>
-          <View style={{ flex: 1, justifyContent: 'center' }}>
-            <TouchableHighlight
-              style={{
-                backgroundColor: '#2196F3',
-                width: 14,
-                alignSelf: 'flex-end',
-                marginRight: 10,
-                marginBottom: 2,
-              }}
-              onPress={() => {
-                setModalVisible(!modalVisible);
-              }}
-            >
-              <Text style={{ fontSize: 20 }}>X</Text>
-            </TouchableHighlight>
-            <TextInput
-              autoFocus={true}
-              style={styles.textInput}
-              onChangeText={(text) => onChangeText(text)}
-              placeholder="닉네임을 검색하세요"
-            />
-            <TouchableHighlight
-              style={{
-                backgroundColor: '#2196F3',
-                width: 30,
-                alignSelf: 'flex-end',
-                marginRight: 10,
-                marginTop: 8,
-              }}
-              onPress={addFriend}
-              value={text}
-            >
-              <Text>Add</Text>
-            </TouchableHighlight>
-          </View>
-        </Modal>
+        {modalVisible ? (
+          <AddFriend
+            visible={modalVisible}
+            setModalVisible={setModalVisible}
+            nickname={user.nickname}
+            friends={friends}
+          />
+        ) : null}
+
         <ScrollView>
           <Text>어서오십쇼 프렌드 리스트</Text>
           {friends.map((val) => {
@@ -99,14 +72,23 @@ function HomeScreen({ friendLists, user, changeFriendLists }) {
             );
           })}
         </ScrollView>
-        <TouchableHighlight
-          onPress={() => {
-            setModalVisible(!modalVisible);
-          }}
-          style={styles.buttonContainer}
-        >
-          <AntDesign name="pluscircle" size={35} color="black" style={styles.addButton} />
-        </TouchableHighlight>
+        <View style={{ flex: 1 }}>
+          <TouchableHighlight
+            onPress={() => {
+              setModalVisible(!modalVisible);
+            }}
+            style={styles.buttonContainer}
+          >
+            <AntDesign name="pluscircle" size={35} color="black" style={styles.addButton} />
+          </TouchableHighlight>
+          <TouchableHighlight
+            onPress={() => {
+              navigation.navigate('chatting', { chattingRoomId: 2 });
+            }}
+          >
+            <AntDesign name="pluscircle" size={50} color="black" />
+          </TouchableHighlight>
+        </View>
       </View>
     </>
   );

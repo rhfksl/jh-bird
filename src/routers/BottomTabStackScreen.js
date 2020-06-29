@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, TouchableHighlight, Button } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
+// import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/HomeScreen';
 import ChatRoomListScreen from '../screens/ChatRoomListScreen';
 import SettingScreen from '../screens/SettingScreen';
@@ -11,33 +11,10 @@ import ChatScreen from '../screens/ChatScreen';
 import ChattingScreen from '../screens/ChattingScreen';
 import { Entypo, Ionicons } from '@expo/vector-icons';
 import * as shortid from 'shortid';
+import RouteChatStack from './ChatStack.js';
+import RouteHomeStack from './HomeStack';
 
 const BottomTab = createBottomTabNavigator();
-const ChatStack = createStackNavigator();
-
-import io from 'socket.io-client';
-const socketClient = io('http://localhost:3000');
-
-const routeChatStack = () => {
-  return (
-    <ChatStack.Navigator>
-      <ChatStack.Screen
-        name="home"
-        component={ChatRoomListScreen}
-        options={{
-          title: '채팅 홈 화면',
-        }}
-      />
-      <ChatStack.Screen
-        name="chatting"
-        component={ChattingScreen}
-        options={{
-          title: '채팅창',
-        }}
-      />
-    </ChatStack.Navigator>
-  );
-};
 
 function BottomTabStackScreen({ hideBottomTab }) {
   return (
@@ -79,8 +56,8 @@ function BottomTabStackScreen({ hideBottomTab }) {
         },
       }}
     >
-      <BottomTab.Screen name="Home" component={HomeScreen} />
-      <BottomTab.Screen name="Chat" component={routeChatStack} />
+      <BottomTab.Screen name="Home" component={RouteHomeStack} />
+      <BottomTab.Screen name="Chat" component={RouteChatStack} />
       <BottomTab.Screen name="Setting" component={SettingScreen} />
     </BottomTab.Navigator>
   );
