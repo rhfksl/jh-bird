@@ -6,49 +6,25 @@ import {
   Modal,
   Keyboard,
   TouchableHighlight,
-  TextInput,
+  TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 import * as shortid from 'shortid';
 import { AntDesign } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
 import AddFriend from './Modal/AddFriend';
+import Friend from './Modal/Friend';
 
 function HomeScreen({ friendLists, user, changeFriendLists, navigation }) {
   const [friends, setFriendLists] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  // const [text, onChangeText] = useState('');
+  const [friendModalvisible, setFriendModalVisible] = useState(false);
+  const [friendInfo, setFriendInfo] = useState({});
 
   // insert friendLists from store into state variable
   useEffect(() => {
     setFriendLists(friendLists);
   }, [friendLists]);
-
-  // const addFriend = () => {
-  //   const checkFriendArr = friendLists.map((friend) => friend.nickname);
-  //   if (checkFriendArr.includes(text)) {
-  //     alert('이미 추가된 닉네임입니다');
-  //     return;
-  //   }
-  //   const body = { myNickname: user.nickname, friendNickname: text };
-  //   fetch('http://127.0.0.1:3000/friendLists/addFriend', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify(body),
-  //   })
-  //     .then((response) => response.json())
-  //     .then((res) => {
-  //       if (res.body === 'not exist') {
-  //         alert('존재하지 않는 닉네임입니다');
-  //       } else {
-  //         changeFriendLists([res.body]);
-  //         onChangeText('');
-  //       }
-  //     })
-  //     .catch((err) => console.log(err));
-  //   };
 
   return (
     <>
@@ -61,14 +37,29 @@ function HomeScreen({ friendLists, user, changeFriendLists, navigation }) {
             friends={friends}
           />
         ) : null}
+        {friendModalvisible ? (
+          <Friend
+            visible={friendModalvisible}
+            setFriendModalVisible={setFriendModalVisible}
+            friendInfo={friendInfo}
+            navigation={navigation}
+          />
+        ) : null}
 
         <ScrollView>
-          <Text>어서오십쇼 프렌드 리스트</Text>
           {friends.map((val) => {
             return (
-              <View key={shortid.generate()} style={styles.friendList}>
+              <TouchableOpacity
+                key={shortid.generate()}
+                style={styles.friendList}
+                onPress={() => {
+                  setFriendInfo(val);
+                  setFriendModalVisible(!friendModalvisible);
+                }}
+                activeOpacity={0.7}
+              >
                 <Text>{val.nickname}</Text>
-              </View>
+              </TouchableOpacity>
             );
           })}
         </ScrollView>
@@ -80,13 +71,6 @@ function HomeScreen({ friendLists, user, changeFriendLists, navigation }) {
             style={styles.buttonContainer}
           >
             <AntDesign name="pluscircle" size={35} color="black" style={styles.addButton} />
-          </TouchableHighlight>
-          <TouchableHighlight
-            onPress={() => {
-              navigation.navigate('chatting', { chattingRoomId: 2 });
-            }}
-          >
-            <AntDesign name="pluscircle" size={50} color="black" />
           </TouchableHighlight>
         </View>
       </View>
@@ -101,6 +85,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderBottomWidth: 1,
     borderBottomColor: 'gray',
+    backgroundColor: 'green',
   },
   textInput: {
     height: 30,
