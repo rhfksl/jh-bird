@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, TouchableHighlight, Button } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/HomeScreen';
 import ChatRoomListScreen from '../screens/ChatRoomListScreen';
 import SettingScreen from '../screens/SettingScreen';
@@ -20,10 +19,6 @@ function BottomTabStackScreen({ hideBottomTab }) {
   return (
     // 하단 탭 아이콘, fontSize 등 설정하는 부분
     <BottomTab.Navigator
-      navigationOptions={({ navigation, route }) => {
-        console.log('what is this', navigation);
-        console.log('this is name', route.name);
-      }}
       screenOptions={({ route, navigation }) => ({
         tabBarIcon: ({ focused }) => {
           if (route.name === 'Home') {
