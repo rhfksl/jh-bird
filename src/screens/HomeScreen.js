@@ -42,6 +42,7 @@ function HomeScreen({ friendLists, user, changeFriendLists, navigation }) {
             visible={friendModalvisible}
             setFriendModalVisible={setFriendModalVisible}
             friendInfo={friendInfo}
+            user={user}
             navigation={navigation}
           />
         ) : null}

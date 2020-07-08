@@ -12,7 +12,20 @@ import {
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
-const Friend = ({ visible, setFriendModalVisible, friendInfo, navigation }) => {
+const Friend = ({ visible, user, setFriendModalVisible, friendInfo, navigation }) => {
+  const getChattingRoomId = (me, friend) => {
+    // request chattingRoomId
+    return fetch('http://127.0.0.1:3000/chattingRooms/isChattingRoomExist', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ usersInfo: [me, friend] }),
+    })
+      .then((res) => res.json())
+      .then((res) => res);
+  };
+
   return (
     <Modal animationType="slide" transparent={true} visible={visible}>
       <TouchableHighlight
@@ -62,8 +75,13 @@ const Friend = ({ visible, setFriendModalVisible, friendInfo, navigation }) => {
                 paddingTop: 10,
                 paddingBottom: 10,
               }}
-              onPress={() => {
-                navigation.navigate('chatting', { chattingRoomId: friendInfo.id });
+              onPress={async () => {
+                const chattingRoomId = await getChattingRoomId(user, friendInfo);
+                navigation.navigate('chatting', {
+                  friendId: friendInfo.id,
+                  userId: user.id,
+                  chattingRoomId: chattingRoomId,
+                });
                 setFriendModalVisible(!visible);
               }}
             >
