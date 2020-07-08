@@ -8,6 +8,7 @@ const initialState = {
   friendLists: [],
   allMessages: {},
   currentChatRooms: [],
+  selectedChatRooms: {},
   hideBottomTab: true,
 };
 

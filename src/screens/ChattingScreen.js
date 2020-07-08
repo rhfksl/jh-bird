@@ -7,9 +7,8 @@ const socketClient = io('http://127.0.0.1:3000');
 import { GiftedChat } from 'react-native-gifted-chat';
 
 const ChattingScreen = ({ user, navigation, allMessages, route, changeHideBottomTabStatus }) => {
-  const { chattingRoomId } = route.params;
+  const { chattingRoomId, friendId } = route.params;
   const [messages, setMessages] = useState([]);
-  // console.log('this is navigation', navigation);
 
   useEffect(() => {
     // disconnect when goback event happens
@@ -24,19 +23,24 @@ const ChattingScreen = ({ user, navigation, allMessages, route, changeHideBottom
       // connect socket to selected chatting room
       const curUser = {};
       curUser.nickname = user.nickname;
-      curUser.chattingRoomId = chattingRoomId;
+      curUser.friendId = friendId;
       socketClient.emit(`joinRoom`, curUser);
     });
+
+    // render messages at first
+    if (allMessages[chattingRoomId]) {
+      setMessages(allMessages[chattingRoomId].messages);
+    }
   }, []);
 
   useEffect(() => {
     if (allMessages[chattingRoomId]) {
       setMessages([...allMessages[chattingRoomId].messages]);
     }
-  }, [allMessages]);
+  }, [allMessages[chattingRoomId]]);
 
   const onSend = (newMsg = []) => {
-    newMsg[0].chattingRoomId = chattingRoomId;
+    newMsg[0].friendId = friendId;
     socketClient.emit('message', newMsg[0]);
   };
 

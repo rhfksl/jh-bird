@@ -44,11 +44,11 @@ function Main({
 
         // connect socketIo to all friends
         socketClient.connect();
-        socketClient.emit(`joinRoom`, { nickname: res.user.nickname, chattingRoomId: res.user.id });
+        socketClient.emit(`joinRoom`, { nickname: res.user.nickname, friendId: res.user.id });
 
         for (let friend of res.friendLists) {
           const connectObj = {};
-          connectObj.chattingRoomId = friend.id;
+          connectObj.friendId = friend.id;
           connectObj.nickname = res.user.nickname;
 
           socketClient.emit(`joinRoom`, connectObj);
