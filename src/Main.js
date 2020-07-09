@@ -66,18 +66,24 @@ function Main({
   });
 
   return (
-    <NavigationContainer>
-      <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
-        <BottomTabStackScreen />
-      </SafeAreaView>
-    </NavigationContainer>
+    // <NavigationContainer>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
+      <BottomTabStackScreen />
+    </SafeAreaView>
+    // </NavigationContainer>
   );
+}
+
+function mapReduxStateToReactProps(state) {
+  return {
+    user: state.user,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     changeUserInfo: (data) => {
-      dispatch({ type: 'GET_USER_INFO', payload: data });
+      dispatch({ type: 'CHANGE_USER_INFO', payload: data });
     },
     changeFriendLists: (data) => {
       dispatch({ type: 'CHANGE_FRIEND_LISTS', payload: data });
@@ -94,4 +100,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(Main);
+export default connect(mapReduxStateToReactProps, mapDispatchToProps)(Main);

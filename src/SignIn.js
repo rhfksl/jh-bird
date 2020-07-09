@@ -1,31 +1,26 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import {
   StyleSheet,
-  Button,
-  Keyboard,
-  View,
   TextInput,
+  Button,
+  Text,
+  View,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
-import Main from './Main';
-import { blue } from 'color-name';
-// createSwitchNavigator(RouteConfigs, SwitchNavigatorConfig);
 
-const Switch = () => {
-  const [isLogin, setIsLogin] = useState(false);
+const SignIn = ({ changeUserInfo, successLogin }) => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
-  const [nickname, setNickname] = useState('');
-  const [user, setUser] = useState();
 
-  const requestFetch = (url) => {
+  const requestFetch = () => {
     const userObj = {};
     userObj.user_id = id;
     userObj.password = password;
-    userObj.nickname = nickname;
 
-    fetch(`http://127.0.0.1:3000/users/${url}`, {
+    fetch(`http://127.0.0.1:3000/users/signIn`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -34,47 +29,47 @@ const Switch = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        if (Object.keys(res)[0] === 'user_id') {
-          setUser(res);
-          setIsLogin(true);
+        // success sign up
+        if (res.id) {
+          changeUserInfo(res);
+          successLogin();
         } else {
           alert(res.body);
         }
       });
   };
 
-  const Login = (
+  return (
     <TouchableWithoutFeedback
       style={{ backgroundColor: 'yellow', flex: 1 }}
       onPress={Keyboard.dismiss}
     >
-      <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={-150} style={{ flex: 1 }}>
+      <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={-80} style={{ flex: 1 }}>
         <View style={{ flex: 1, justifyContent: 'center' }}>
+          <View>
+            <Text style={styles.text}>ID</Text>
+          </View>
           <TextInput
             style={styles.input}
             onChangeText={(text) => setId(text)}
             placeholder="아이디를 입력하세요"
           />
+          <View>
+            <Text style={styles.text}>PASSWORD</Text>
+          </View>
           <TextInput
             style={styles.input}
             onChangeText={(text) => setPassword(text)}
+            secureTextEntry={true}
             placeholder="비밀번호를 입력하세요"
           />
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setNickname(text)}
-            placeholder="닉네임을 입력하세요"
-          />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-            <Button title="Sign Up" onPress={() => requestFetch('signUp')} />
+          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <Button title="Login" onPress={() => requestFetch('login')} />
           </View>
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
-
-  return isLogin ? <Main user={user} /> : Login;
 };
 
 const styles = StyleSheet.create({
@@ -86,6 +81,22 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     paddingHorizontal: 10,
   },
+  text: {
+    marginLeft: 20,
+    fontSize: 15,
+    marginRight: 8,
+  },
 });
 
-export default Switch;
+function mapDispatchToProps(dispatch) {
+  return {
+    changeUserInfo: (data) => {
+      dispatch({ type: 'CHANGE_USER_INFO', payload: data });
+    },
+    successLogin: () => {
+      dispatch({ type: 'SET_ISLOGINED' });
+    },
+  };
+}
+
+export default connect(null, mapDispatchToProps)(SignIn);

@@ -1,7 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
-import Main from './src/Main';
-import Switch from './src/Switch';
+import RouteWelcomePageStack from './src/routers/RouteWelcomePageStack';
 
 // set redux store
 import { createStore } from 'redux';
@@ -16,8 +15,7 @@ const store = createStore(
 export default function App() {
   return (
     <Provider store={store}>
-      <Switch></Switch>
-      {/* <Main /> */}
+      <RouteWelcomePageStack />
     </Provider>
   );
 }
