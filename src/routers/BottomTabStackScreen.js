@@ -1,25 +1,20 @@
 import 'react-native-gesture-handler';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, View, TouchableHighlight, Button } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../screens/HomeScreen';
-import ChatRoomListScreen from '../screens/ChatRoomListScreen';
-import SettingScreen from '../screens/SettingScreen';
-import ChatScreen from '../screens/ChatScreen';
-import ChattingScreen from '../screens/ChattingScreen';
+
 import { Entypo, Ionicons } from '@expo/vector-icons';
-import * as shortid from 'shortid';
+import SettingScreen from '../screens/SettingScreen';
 import RouteChatStack from './ChatStack.js';
 import RouteHomeStack from './HomeStack';
 
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const BottomTab = createBottomTabNavigator();
 
 function BottomTabStackScreen({ hideBottomTab }) {
   return (
     // 하단 탭 아이콘, fontSize 등 설정하는 부분
     <BottomTab.Navigator
-      screenOptions={({ route, navigation }) => ({
+      screenOptions={({ route }) => ({
         tabBarIcon: ({ focused }) => {
           if (route.name === 'Home') {
             return focused ? (

@@ -5,6 +5,7 @@ const initialState = {
     nickname: '고라니',
   },
 
+  isLogined: false,
   friendLists: [],
   allMessages: {},
   currentChatRooms: [],
@@ -25,7 +26,7 @@ const reducers = (state = initialState, action) => {
         allMessages: action.payload,
       };
     }
-    case 'GET_USER_INFO': {
+    case 'CHANGE_USER_INFO': {
       return {
         ...state,
         user: action.payload,
@@ -70,6 +71,12 @@ const reducers = (state = initialState, action) => {
       return {
         ...state,
         hideBottomTab: !state.hideBottomTab,
+      };
+    }
+    case 'SET_ISLOGINED': {
+      return {
+        ...state,
+        isLogined: !state.isLogined,
       };
     }
     default:
