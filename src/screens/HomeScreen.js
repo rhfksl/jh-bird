@@ -33,7 +33,7 @@ function HomeScreen({ friendLists, user, changeFriendLists, navigation }) {
           <AddFriend
             visible={modalVisible}
             setModalVisible={setModalVisible}
-            nickname={user.nickname}
+            user={user}
             friends={friends}
           />
         ) : null}

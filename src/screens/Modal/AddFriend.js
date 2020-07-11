@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Modal, Text, View, TouchableHighlight, TextInput } from 'react-native';
 
-const AddFriend = ({ visible, setModalVisible, friends, nickname, changeFriendLists }) => {
+const AddFriend = ({ visible, setModalVisible, friends, user, changeFriendLists }) => {
   const [text, onChangeText] = useState('');
 
-  const addFriend = () => {
+  const requestAddFriend = () => {
     for (let i = 0; i < friends.length; i++) {
       if (friends[i].nickname === text) {
         alert('이미 추가된 닉네임입니다');
@@ -13,7 +13,7 @@ const AddFriend = ({ visible, setModalVisible, friends, nickname, changeFriendLi
       }
     }
 
-    const body = { myNickname: nickname, friendNickname: text };
+    const body = { userId: user.id, friendNickname: text };
     fetch('http://127.0.0.1:3000/friendLists/addFriend', {
       method: 'POST',
       headers: {
@@ -26,7 +26,7 @@ const AddFriend = ({ visible, setModalVisible, friends, nickname, changeFriendLi
         if (res.body === 'not exist') {
           alert('존재하지 않는 닉네임입니다');
         } else {
-          changeFriendLists([res.body]);
+          changeFriendLists([res]);
           onChangeText('');
         }
       })
@@ -50,7 +50,7 @@ const AddFriend = ({ visible, setModalVisible, friends, nickname, changeFriendLi
           onChangeText={(text) => onChangeText(text)}
           placeholder="닉네임을 검색하세요"
         />
-        <TouchableHighlight style={styles.addButton} onPress={addFriend} value={text}>
+        <TouchableHighlight style={styles.addButton} onPress={requestAddFriend} value={text}>
           <Text>Add</Text>
         </TouchableHighlight>
       </View>

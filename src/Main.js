@@ -1,7 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native';
 import BottomTabStackScreen from './routers/BottomTabStackScreen';
 
@@ -42,17 +41,14 @@ function Main({
         const user = {};
         user.nickname = res.user.nickname;
 
-        // connect socketIo to all friends
+        // connect socketIo to myself for getting messages sent to me
         socketClient.connect();
         socketClient.emit(`joinRoom`, { nickname: res.user.nickname, friendId: res.user.id });
 
-        for (let friend of res.friendLists) {
-          const connectObj = {};
-          connectObj.friendId = friend.id;
-          connectObj.nickname = res.user.nickname;
-
-          socketClient.emit(`joinRoom`, connectObj);
-        }
+        socketClient.on('message', (message) => {
+          // get messages in real time
+          addMessageToChattingRoom(message);
+        });
 
         // add current rooms in store
         changeCurrentChatRooms(Object.keys(res.allChatRooms));
@@ -60,17 +56,10 @@ function Main({
       .catch((err) => console.log(err));
   }, []);
 
-  socketClient.on('message', (message) => {
-    // get messages in real time
-    addMessageToChattingRoom(message);
-  });
-
   return (
-    // <NavigationContainer>
     <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
       <BottomTabStackScreen />
     </SafeAreaView>
-    // </NavigationContainer>
   );
 }
 

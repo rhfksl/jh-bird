@@ -29,8 +29,10 @@ const ChattingScreen = ({
     // connect socket when enter this component
     navigation.addListener('focus', () => {
       changeHideBottomTabStatus();
+
       socketClient.connect();
-      // connect socket to selected chatting room
+
+      // connect socket to friend
       const curUser = {};
       curUser.nickname = user.nickname;
       curUser.friendId = friendId;
@@ -57,7 +59,7 @@ const ChattingScreen = ({
     }
   }, [allMessages[chattingRoomId]]);
 
-  const onSend = (newMsg = []) => {
+  const sendMessage = (newMsg = []) => {
     newMsg[0].friendId = friendId;
     socketClient.emit('message', newMsg[0]);
   };
@@ -89,7 +91,7 @@ const ChattingScreen = ({
       <View style={{ flex: 1 }}>
         <GiftedChat
           messages={messages}
-          onSend={(messages) => onSend(messages)}
+          onSend={(msg) => sendMessage(msg)}
           user={{
             _id: user.id,
             name: user.nickname,
