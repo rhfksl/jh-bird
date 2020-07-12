@@ -37,27 +37,9 @@ const Friend = ({ visible, user, setFriendModalVisible, friendInfo, navigation }
       >
         <FontAwesome name="close" size={30} color="black" />
       </TouchableHighlight>
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 50,
-          width: '100%',
-          height: 150,
-          backgroundColor: 'blue',
-        }}
-      >
+      <View style={styles.container}>
         <View style={{ display: 'flex', flexDirection: 'row' }}>
-          <Image
-            style={{
-              width: 120,
-              height: 120,
-              borderRadius: 55,
-              marginTop: 15,
-              marginLeft: 10,
-              //   resizeMode: 'cover',
-            }}
-            source={{ url: friendInfo.img }}
-          />
+          <Image style={styles.img} source={{ url: friendInfo.img }} />
           <View
             style={{
               paddingTop: 20,
@@ -66,10 +48,10 @@ const Friend = ({ visible, user, setFriendModalVisible, friendInfo, navigation }
               justifyContent: 'space-between',
             }}
           >
-            <Text>{friendInfo.nickname}</Text>
+            <Text style={{ fontSize: 20 }}>{friendInfo.nickname}</Text>
             <TouchableOpacity
               style={{
-                backgroundColor: 'red',
+                backgroundColor: '#EBE5E4',
                 paddingLeft: 10,
                 paddingRight: 10,
                 paddingTop: 10,
@@ -85,7 +67,7 @@ const Friend = ({ visible, user, setFriendModalVisible, friendInfo, navigation }
                 setFriendModalVisible(!visible);
               }}
             >
-              <Text style={{ fontSize: 20 }}>대화창 이동</Text>
+              <Text style={{ fontSize: 15 }}>대화창 이동</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -95,12 +77,19 @@ const Friend = ({ visible, user, setFriendModalVisible, friendInfo, navigation }
 };
 
 const styles = StyleSheet.create({
-  addButton: {
-    backgroundColor: '#2196F3',
-    width: 30,
-    alignSelf: 'flex-end',
-    marginRight: 10,
-    marginTop: 8,
+  container: {
+    position: 'absolute',
+    bottom: 50,
+    width: '100%',
+    height: 150,
+    backgroundColor: '#DDDDDD',
+  },
+  img: {
+    width: 120,
+    height: 120,
+    borderRadius: 55,
+    marginTop: 15,
+    marginLeft: 10,
   },
 });
 

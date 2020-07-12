@@ -7,6 +7,7 @@ import {
   Keyboard,
   TouchableHighlight,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import { connect } from 'react-redux';
 import * as shortid from 'shortid';
@@ -28,7 +29,7 @@ function HomeScreen({ friendLists, user, changeFriendLists, navigation }) {
 
   return (
     <>
-      <View style={{ flex: 1, backgroundColor: 'yellow' }}>
+      <View style={{ flex: 1, backgroundColor: 'white' }}>
         {modalVisible ? (
           <AddFriend
             visible={modalVisible}
@@ -59,7 +60,8 @@ function HomeScreen({ friendLists, user, changeFriendLists, navigation }) {
                 }}
                 activeOpacity={0.7}
               >
-                <Text>{val.nickname}</Text>
+                <Image style={styles.img} source={{ url: val.img }} />
+                <Text style={styles.name}>{val.nickname}</Text>
               </TouchableOpacity>
             );
           })}
@@ -82,11 +84,10 @@ function HomeScreen({ friendLists, user, changeFriendLists, navigation }) {
 const styles = StyleSheet.create({
   friendList: {
     paddingLeft: 10,
-    paddingTop: 15,
-    height: 50,
-    borderBottomWidth: 1,
-    borderBottomColor: 'gray',
-    backgroundColor: 'green',
+    height: 70,
+    backgroundColor: 'transparent',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   textInput: {
     height: 30,
@@ -96,17 +97,20 @@ const styles = StyleSheet.create({
     paddingLeft: 7,
     backgroundColor: 'white',
   },
+  img: {
+    width: 50,
+    height: 50,
+    borderRadius: 55,
+  },
+  name: {
+    marginLeft: 15,
+    fontSize: 20,
+  },
   buttonContainer: {
-    // backgroundColor: 'blue',
     width: 38,
     position: 'absolute',
     bottom: 10,
     right: 10,
-  },
-  addButton: {
-    // alignSelf: 'flex-end',
-    // marginRight: 10,
-    // marginTop: 10,
   },
 });
 
