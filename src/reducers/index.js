@@ -8,7 +8,7 @@ const initialState = {
   isLogined: false,
   friendLists: [],
   allMessages: {},
-  currentChatRooms: [],
+  currentChatRoomlists: [],
   hideBottomTab: true,
 };
 
@@ -35,35 +35,33 @@ const reducers = (state = initialState, action) => {
     case 'CHANGE_CURRENT_CHATTING_ROOM': {
       return {
         ...state,
-        currentChatRooms: [...state.currentChatRooms, ...action.payload],
+        currentChatRoomlists: [...state.currentChatRoomlists, ...action.payload],
       };
     }
     case 'ADD_MESSAGE_TO_CHATTING_ROOM': {
-      const curRoomId = action.payload.chattingRoomId;
-      // change room list order
+      const curRoomId = action.payload.roomInfo.id;
 
-      let addMessagesArr, currentChatRooms;
+      let currentChatRooms, currentChatRoomlists;
       if (!state.allMessages[curRoomId]) {
-        addMessagesArr = [action.payload];
-        currentChatRooms = [curRoomId, ...state.currentChatRooms];
+        currentChatRooms = { ...action.payload.roomInfo, messages: [action.payload.message] };
+        currentChatRoomlists = [curRoomId, ...state.currentChatRoomlists];
       } else {
-        addMessagesArr = [action.payload, ...state.allMessages[curRoomId].messages.slice()];
-        // change room list order(place latest chat room to the top)
-        currentChatRooms = state.currentChatRooms.slice();
-        let currentChatRoomsIdx = currentChatRooms.indexOf(curRoomId);
-        currentChatRooms.splice(currentChatRoomsIdx, 1);
-        currentChatRooms.unshift(curRoomId);
+        let addedMessageArr = [action.payload.message, ...state.allMessages[curRoomId].messages];
+        currentChatRooms = { ...state.allMessages[curRoomId] };
+        currentChatRooms.messages = addedMessageArr;
+
+        //change room list order(place latest chat room to the top)
+        currentChatRoomlists = state.currentChatRoomlists.slice();
+        currentChatRoomlists.splice(currentChatRoomlists.indexOf(String(curRoomId)), 1);
+        currentChatRoomlists.unshift(String(curRoomId));
       }
       return {
         ...state,
         allMessages: {
           ...state.allMessages,
-          [curRoomId]: {
-            ...state.allMessages[curRoomId],
-            messages: addMessagesArr,
-          },
+          [curRoomId]: currentChatRooms,
         },
-        currentChatRooms: currentChatRooms,
+        currentChatRoomlists: currentChatRoomlists,
       };
     }
 

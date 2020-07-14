@@ -59,6 +59,7 @@ const Friend = ({ visible, user, setFriendModalVisible, friendInfo, navigation }
               }}
               onPress={async () => {
                 const chattingRoomId = await getChattingRoomId(user, friendInfo);
+                // console.log('geeeeeeeetttttt?=======>', chattingRoomId);
                 navigation.navigate('chatting', {
                   friendId: friendInfo.id,
                   userId: user.id,

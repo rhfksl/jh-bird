@@ -14,6 +14,7 @@ function Main({
   changeCurrentChatRooms,
   addMessageToChattingRoom,
   user,
+  currentChatRooms,
 }) {
   useEffect(() => {
     // request user Data
@@ -46,7 +47,11 @@ function Main({
         socketClient.emit(`joinRoom`, { nickname: res.user.nickname, friendId: res.user.id });
 
         socketClient.on('message', (message) => {
+          // if (!currentChatRooms.includes(message.chattingRoomId)) {
+          //   changeCurrentChatRooms([message.chattingRoomId]);
+          // }
           // get messages in real time
+          // console.log('여기서 check========>', message);
           addMessageToChattingRoom(message);
         });
 
@@ -66,6 +71,7 @@ function Main({
 function mapReduxStateToReactProps(state) {
   return {
     user: state.user,
+    currentChatRooms: state.currentChatRooms,
   };
 }
 
