@@ -51,9 +51,37 @@ function ChatRoomListScreen({ navigation, allMessages, currentChatRoomlists, use
         <Image style={styles.img} source={{ url: image }} />
         <View style={styles.room}>
           <Text>{roomname}</Text>
-          <View style={{ alignItems: 'flex-end', paddingRight: 10 }}>
-            <Text style={{ color: 'gray' }}>{date}</Text>
-            <Text style={{ color: 'gray' }}>{hour}</Text>
+          <View
+            style={{
+              alignItems: 'flex-end',
+              paddingRight: 10,
+              flexDirection: 'row',
+              justifyContent: 'center',
+            }}
+          >
+            {allMessages[roomId].count ? (
+              <View
+                style={{
+                  backgroundColor: '#CCEEFF',
+                  alignSelf: 'center',
+                  width: 35,
+                  height: 35,
+                  borderRadius: 55,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginRight: 10,
+                }}
+              >
+                <Text style={{ color: 'black', fontWeight: 'bold' }}>
+                  {allMessages[roomId].count}
+                </Text>
+              </View>
+            ) : null}
+
+            <View>
+              <Text style={{ color: 'gray' }}>{date}</Text>
+              <Text style={{ color: 'gray' }}>{hour}</Text>
+            </View>
           </View>
         </View>
       </TouchableOpacity>
@@ -68,7 +96,7 @@ function ChatRoomListScreen({ navigation, allMessages, currentChatRoomlists, use
       }
       setChatRoomLists(changeRoomOrder);
     }
-  }, [currentChatRoomlists]);
+  }, [allMessages]);
 
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent' }}>

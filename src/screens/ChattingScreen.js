@@ -15,6 +15,7 @@ const ChattingScreen = ({
   route,
   changeHideBottomTabStatus,
   addFriendInStore,
+  initializeCount,
 }) => {
   const { chattingRoomId, friendId } = route.params;
   const [messages, setMessages] = useState([]);
@@ -25,11 +26,13 @@ const ChattingScreen = ({
     navigation.addListener('blur', () => {
       socketClient.disconnect();
       changeHideBottomTabStatus();
+
+      // initialize this chattingRoom count
+      initializeCount(chattingRoomId);
     });
     // connect socket when enter this component
     navigation.addListener('focus', () => {
       changeHideBottomTabStatus();
-
       socketClient.connect();
 
       // connect socket to friend
@@ -37,6 +40,9 @@ const ChattingScreen = ({
       curUser.nickname = user.nickname;
       curUser.friendId = friendId;
       socketClient.emit(`joinRoom`, curUser);
+
+      // initialize this chattingRoom count
+      initializeCount(chattingRoomId);
     });
 
     // render messages at first
@@ -130,6 +136,9 @@ function mapDispatchToProps(dispatch) {
     },
     addFriendInStore: (friend) => {
       dispatch({ type: 'CHANGE_FRIEND_LISTS', payload: friend });
+    },
+    initializeCount: (chattingRoomId) => {
+      dispatch({ type: 'INITIALIZE_COUNT', payload: chattingRoomId });
     },
   };
 }
