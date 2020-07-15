@@ -33,6 +33,7 @@ function Main({
 
         // reverse all messages for ordering chatting messages
         Object.values(res.allChatRooms).forEach((room) => {
+          room.count = 0;
           room.messages.reverse();
         });
 
@@ -47,11 +48,7 @@ function Main({
         socketClient.emit(`joinRoom`, { nickname: res.user.nickname, friendId: res.user.id });
 
         socketClient.on('message', (message) => {
-          // if (!currentChatRooms.includes(message.chattingRoomId)) {
-          //   changeCurrentChatRooms([message.chattingRoomId]);
-          // }
           // get messages in real time
-          // console.log('여기서 check========>', message);
           addMessageToChattingRoom(message);
         });
 

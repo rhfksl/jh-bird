@@ -6,6 +6,7 @@ const initialState = {
     img: '',
   },
 
+  totalCount: 0,
   isLogined: false,
   friendLists: [],
   allMessages: {},
@@ -44,12 +45,17 @@ const reducers = (state = initialState, action) => {
 
       let currentChatRooms, currentChatRoomlists;
       if (!state.allMessages[curRoomId]) {
-        currentChatRooms = { ...action.payload.roomInfo, messages: [action.payload.message] };
+        currentChatRooms = {
+          ...action.payload.roomInfo,
+          messages: [action.payload.message],
+          count: 1,
+        };
         currentChatRoomlists = [String(curRoomId), ...state.currentChatRoomlists];
       } else {
         let addedMessageArr = [action.payload.message, ...state.allMessages[curRoomId].messages];
         currentChatRooms = { ...state.allMessages[curRoomId] };
         currentChatRooms.messages = addedMessageArr;
+        currentChatRooms.count += 1;
 
         //change room list order(place latest chat room to the top)
         currentChatRoomlists = state.currentChatRoomlists.slice();
@@ -63,6 +69,7 @@ const reducers = (state = initialState, action) => {
           [curRoomId]: currentChatRooms,
         },
         currentChatRoomlists: currentChatRoomlists,
+        totalCount: state.totalCount + 1,
       };
     }
 
@@ -81,6 +88,20 @@ const reducers = (state = initialState, action) => {
     case 'LOG_OUT': {
       state = initialState;
       return state;
+    }
+    case 'INITIALIZE_COUNT': {
+      const chattingRoomId = String(action.payload);
+      return {
+        ...state,
+        totalCount: state.totalCount - state.allMessages[chattingRoomId].count,
+        allMessages: {
+          ...state.allMessages,
+          [chattingRoomId]: {
+            ...state.allMessages[chattingRoomId],
+            count: 0,
+          },
+        },
+      };
     }
     default:
       return state;

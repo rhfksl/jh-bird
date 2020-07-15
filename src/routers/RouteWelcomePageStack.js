@@ -23,7 +23,8 @@ const RouteWelcomePageStack = ({ isLogined }) => {
             name="welcomePage"
             component={WelcomePage}
             options={{
-              title: 'Welcome Page',
+              title: 'JH Bird',
+              headerShown: false,
             }}
           />
           <WelcomePageStack.Screen
