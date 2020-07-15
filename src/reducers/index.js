@@ -44,7 +44,7 @@ const reducers = (state = initialState, action) => {
       let currentChatRooms, currentChatRoomlists;
       if (!state.allMessages[curRoomId]) {
         currentChatRooms = { ...action.payload.roomInfo, messages: [action.payload.message] };
-        currentChatRoomlists = [curRoomId, ...state.currentChatRoomlists];
+        currentChatRoomlists = [String(curRoomId), ...state.currentChatRoomlists];
       } else {
         let addedMessageArr = [action.payload.message, ...state.allMessages[curRoomId].messages];
         currentChatRooms = { ...state.allMessages[curRoomId] };
