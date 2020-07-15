@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
+const axios = require('axios');
 
 const SignUp = ({ successLogin, changeUserInfo }) => {
   const [id, setId] = useState('');
@@ -34,23 +35,30 @@ const SignUp = ({ successLogin, changeUserInfo }) => {
     userObj.password = password;
     userObj.nickname = nickname;
 
-    fetch(`http://127.0.0.1:3000/users/signUp`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userObj),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        // success sign up
-        if (res.id) {
-          changeUserInfo(res);
-          successLogin();
-        } else {
-          alert(res.body);
-        }
-      });
+    axios({
+      method: 'post',
+      url: 'http://127.0.0.1:3000/users/signUp',
+      data: userObj,
+    }).then((res) => console.log(res));
+
+    // fetch request
+    // fetch(`http://127.0.0.1:3000/users/signUp`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(userObj),
+    // })
+    //   .then((res) => res.json())
+    //   .then((res) => {
+    //     // success sign up
+    //     if (res.id) {
+    //       changeUserInfo(res);
+    //       successLogin();
+    //     } else {
+    //       alert(res.body);
+    //     }
+    //   });
   };
 
   return (
