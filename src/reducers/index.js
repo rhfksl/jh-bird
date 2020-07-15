@@ -1,8 +1,9 @@
 const initialState = {
   user: {
     id: '',
-    user_id: 'asdf',
-    nickname: '고라니',
+    user_id: '',
+    nickname: '',
+    img: '',
   },
 
   isLogined: false,
@@ -76,6 +77,10 @@ const reducers = (state = initialState, action) => {
         ...state,
         isLogined: !state.isLogined,
       };
+    }
+    case 'LOG_OUT': {
+      state = initialState;
+      return state;
     }
     default:
       return state;
