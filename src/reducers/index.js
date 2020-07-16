@@ -46,7 +46,7 @@ const reducers = (state = initialState, action) => {
       let currentChatRooms, currentChatRoomlists;
       if (!state.allMessages[curRoomId]) {
         currentChatRooms = {
-          ...action.payload.roomInfo,
+          roomInfo: action.payload.roomInfo,
           messages: [action.payload.message],
           count: 1,
         };
@@ -91,9 +91,10 @@ const reducers = (state = initialState, action) => {
     }
     case 'INITIALIZE_COUNT': {
       const chattingRoomId = String(action.payload);
+      let currentCount = state.allMessages[chattingRoomId].count;
+
       return {
         ...state,
-        totalCount: state.totalCount - state.allMessages[chattingRoomId].count,
         allMessages: {
           ...state.allMessages,
           [chattingRoomId]: {
@@ -101,6 +102,22 @@ const reducers = (state = initialState, action) => {
             count: 0,
           },
         },
+        totalCount: state.totalCount - currentCount,
+      };
+    }
+    case 'CREATE_CHATTINGROOM': {
+      const chattingRoomId = action.payload.id;
+      return {
+        ...state,
+        allMessages: {
+          ...state.allMessages,
+          [chattingRoomId]: {
+            roomInfo: action.payload,
+            messages: [],
+            count: 0,
+          },
+        },
+        currentChatRoomlists: [String(chattingRoomId), ...state.currentChatRoomlists],
       };
     }
     default:

@@ -31,11 +31,11 @@ function ChatRoomListScreen({ navigation, allMessages, currentChatRoomlists, use
     return { date, hour };
   };
 
-  const makeChatRoomComponent = (roomId, roomInfo) => {
-    const { friendId, roomname } = getRoomName(roomInfo);
+  const makeChatRoomComponent = (roomId, room) => {
+    const { friendId, roomname } = getRoomName(room.roomInfo);
 
     const image = getFriendImage(friendId);
-    let { date, hour } = formatTimestamp(roomInfo.messages[0].createdAt);
+    let { date, hour } = formatTimestamp(room.messages[0].createdAt);
 
     return (
       <TouchableOpacity
@@ -92,7 +92,10 @@ function ChatRoomListScreen({ navigation, allMessages, currentChatRoomlists, use
     if (currentChatRoomlists.length) {
       const changeRoomOrder = [];
       for (let room of currentChatRoomlists) {
-        changeRoomOrder.push(makeChatRoomComponent(room, allMessages[room]));
+        // create room only when message exists
+        if (allMessages[room].messages.length) {
+          changeRoomOrder.push(makeChatRoomComponent(room, allMessages[room]));
+        }
       }
       setChatRoomLists(changeRoomOrder);
     }
