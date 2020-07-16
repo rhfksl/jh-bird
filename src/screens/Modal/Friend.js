@@ -12,7 +12,15 @@ import {
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
-const Friend = ({ visible, user, setFriendModalVisible, friendInfo, navigation }) => {
+const Friend = ({
+  visible,
+  user,
+  setFriendModalVisible,
+  friendInfo,
+  navigation,
+  currentChatRoomlists,
+  createChattingRoom,
+}) => {
   const getChattingRoomId = (me, friend) => {
     // request chattingRoomId
     return fetch('http://127.0.0.1:3000/chattingRooms/isChattingRoomExist', {
@@ -58,12 +66,16 @@ const Friend = ({ visible, user, setFriendModalVisible, friendInfo, navigation }
                 paddingBottom: 10,
               }}
               onPress={async () => {
-                const chattingRoomId = await getChattingRoomId(user, friendInfo);
-                // console.log('geeeeeeeetttttt?=======>', chattingRoomId);
+                const chattingRoom = await getChattingRoomId(user, friendInfo);
+                console.log(chattingRoom);
+                if (!currentChatRoomlists.includes(String(chattingRoom.id))) {
+                  createChattingRoom(chattingRoom);
+                }
+
                 navigation.navigate('chatting', {
                   friendId: friendInfo.id,
                   userId: user.id,
-                  chattingRoomId: chattingRoomId,
+                  chattingRoomId: chattingRoom.id,
                 });
                 setFriendModalVisible(!visible);
               }}
@@ -94,12 +106,18 @@ const styles = StyleSheet.create({
   },
 });
 
+function mapReduxStateToReactProps(state) {
+  return {
+    currentChatRoomlists: state.currentChatRoomlists,
+  };
+}
+
 function mapDispatchToProps(dispatch) {
   return {
-    changeFriendLists: (data) => {
-      dispatch({ type: 'CHANGE_FRIEND_LISTS', payload: data });
+    createChattingRoom: (data) => {
+      dispatch({ type: 'CREATE_CHATTINGROOM', payload: data });
     },
   };
 }
 
-export default connect(null, mapDispatchToProps)(Friend);
+export default connect(mapReduxStateToReactProps, mapDispatchToProps)(Friend);
