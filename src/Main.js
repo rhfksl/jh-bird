@@ -14,7 +14,8 @@ function Main({
   changeCurrentChatRooms,
   addMessageToChattingRoom,
   user,
-  currentChatRooms,
+  logOut,
+  isSocketConnected,
 }) {
   useEffect(() => {
     // request user Data
@@ -39,10 +40,6 @@ function Main({
 
         changeAllMessages(res.allChatRooms);
 
-        // would-be user for connecting
-        const user = {};
-        user.nickname = res.user.nickname;
-
         // connect socketIo to myself for getting messages sent to me
         socketClient.connect();
         socketClient.emit(`joinRoom`, { nickname: res.user.nickname, friendId: res.user.id });
@@ -58,6 +55,14 @@ function Main({
       .catch((err) => console.log(err));
   }, []);
 
+  useEffect(() => {
+    if (!isSocketConnected) {
+      // disconnect socketIo before logout
+      socketClient.disconnect();
+      logOut();
+    }
+  }, [!isSocketConnected]);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
       <BottomTabStackScreen />
@@ -69,6 +74,8 @@ function mapReduxStateToReactProps(state) {
   return {
     user: state.user,
     currentChatRooms: state.currentChatRooms,
+    isLogined: state.isLogined,
+    isSocketConnected: state.isSocketConnected,
   };
 }
 
@@ -88,6 +95,9 @@ function mapDispatchToProps(dispatch) {
     },
     addMessageToChattingRoom: (data) => {
       dispatch({ type: 'ADD_MESSAGE_TO_CHATTING_ROOM', payload: data });
+    },
+    logOut: () => {
+      dispatch({ type: 'LOG_OUT' });
     },
   };
 }

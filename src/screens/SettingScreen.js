@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, View, Text, Image } from 'react-native';
 import { connect } from 'react-redux';
 
-const SettingScreen = ({ user, logOut }) => {
+const SettingScreen = ({ user, disconnectSocket }) => {
   return (
     <View style={{ paddingTop: 20, paddingLeft: 15 }}>
       <View style={{ flexDirection: 'row' }}>
@@ -12,7 +12,7 @@ const SettingScreen = ({ user, logOut }) => {
           <Text style={{ color: 'gray' }}>{user.user_id}</Text>
         </View>
       </View>
-      <Button onPress={logOut} title="logout" />
+      <Button onPress={disconnectSocket} title="logout" />
     </View>
   );
 };
@@ -25,8 +25,8 @@ function mapReduxStateToReactProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    logOut: () => {
-      dispatch({ type: 'LOG_OUT' });
+    disconnectSocket: () => {
+      dispatch({ type: 'IS_SOCKET_CONNECTED' });
     },
   };
 }

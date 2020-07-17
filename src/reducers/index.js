@@ -6,6 +6,7 @@ const initialState = {
     img: '',
   },
 
+  isSocketConnected: true,
   totalCount: 0,
   isLogined: false,
   friendLists: [],
@@ -118,6 +119,12 @@ const reducers = (state = initialState, action) => {
           },
         },
         currentChatRoomlists: [String(chattingRoomId), ...state.currentChatRoomlists],
+      };
+    }
+    case 'IS_SOCKET_CONNECTED': {
+      return {
+        ...state,
+        isSocketConnected: false,
       };
     }
     default:
