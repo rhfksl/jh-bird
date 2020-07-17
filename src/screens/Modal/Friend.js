@@ -20,6 +20,7 @@ const Friend = ({
   navigation,
   currentChatRoomlists,
   createChattingRoom,
+  changeChattingRoomTitle,
 }) => {
   const getChattingRoomId = (me, friend) => {
     // request chattingRoomId
@@ -50,13 +51,13 @@ const Friend = ({
           <Image style={styles.img} source={{ url: friendInfo.img }} />
           <View
             style={{
-              paddingTop: 20,
+              paddingTop: 35,
               paddingBottom: 20,
-              paddingLeft: 20,
+              paddingLeft: 25,
               justifyContent: 'space-between',
             }}
           >
-            <Text style={{ fontSize: 20 }}>{friendInfo.nickname}</Text>
+            <Text style={{ fontSize: 15, marginLeft: 5 }}>{friendInfo.nickname}</Text>
             <TouchableOpacity
               style={{
                 backgroundColor: '#EBE5E4',
@@ -64,13 +65,15 @@ const Friend = ({
                 paddingRight: 10,
                 paddingTop: 10,
                 paddingBottom: 10,
+                borderRadius: 55,
               }}
               onPress={async () => {
                 const chattingRoom = await getChattingRoomId(user, friendInfo);
-                console.log(chattingRoom);
                 if (!currentChatRoomlists.includes(String(chattingRoom.id))) {
                   createChattingRoom(chattingRoom);
                 }
+
+                changeChattingRoomTitle(friendInfo.nickname);
 
                 navigation.navigate('chatting', {
                   friendId: friendInfo.id,
@@ -80,7 +83,7 @@ const Friend = ({
                 setFriendModalVisible(!visible);
               }}
             >
-              <Text style={{ fontSize: 15 }}>대화창 이동</Text>
+              <Text style={{ fontFamily: 'Symbol', fontSize: 20 }}>대화창 이동</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -116,6 +119,9 @@ function mapDispatchToProps(dispatch) {
   return {
     createChattingRoom: (data) => {
       dispatch({ type: 'CREATE_CHATTINGROOM', payload: data });
+    },
+    changeChattingRoomTitle: (title) => {
+      dispatch({ type: 'CHANGE_CHATTINGROOM_TITLE', payload: title });
     },
   };
 }

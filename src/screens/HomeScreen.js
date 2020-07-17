@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Modal,
-  Keyboard,
-  TouchableHighlight,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { connect } from 'react-redux';
 import * as shortid from 'shortid';
 import { AntDesign } from '@expo/vector-icons';
@@ -16,7 +7,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import AddFriend from './Modal/AddFriend';
 import Friend from './Modal/Friend';
 
-function HomeScreen({ friendLists, user, changeFriendLists, navigation }) {
+function HomeScreen({ friendLists, user, navigation }) {
   const [friends, setFriendLists] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [friendModalvisible, setFriendModalVisible] = useState(false);
@@ -67,14 +58,14 @@ function HomeScreen({ friendLists, user, changeFriendLists, navigation }) {
           })}
         </ScrollView>
         <View style={{ flex: 1 }}>
-          <TouchableHighlight
+          <TouchableOpacity
             onPress={() => {
               setModalVisible(!modalVisible);
             }}
             style={styles.buttonContainer}
           >
             <AntDesign name="pluscircle" size={35} color="black" style={styles.addButton} />
-          </TouchableHighlight>
+          </TouchableOpacity>
         </View>
       </View>
     </>
