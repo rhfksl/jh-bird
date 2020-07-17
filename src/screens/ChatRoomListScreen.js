@@ -3,7 +3,14 @@ import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Image } from 'rea
 import { connect } from 'react-redux';
 import shortid from 'shortid';
 
-function ChatRoomListScreen({ navigation, allMessages, currentChatRoomlists, user, friendLists }) {
+function ChatRoomListScreen({
+  navigation,
+  allMessages,
+  currentChatRoomlists,
+  user,
+  friendLists,
+  changeChattingRoomTitle,
+}) {
   const [chatRoomLists, setChatRoomLists] = useState([]);
 
   const getRoomName = (roomInfo) => {
@@ -42,6 +49,7 @@ function ChatRoomListScreen({ navigation, allMessages, currentChatRoomlists, use
         key={shortid.generate()}
         style={styles.chattingRoomList}
         onPress={() => {
+          changeChattingRoomTitle(roomname.split(' ')[0]);
           navigation.navigate('chatting', {
             chattingRoomId: roomId,
             friendId: friendId,
@@ -139,4 +147,12 @@ function mapReduxStateToReactProps(state) {
   };
 }
 
-export default connect(mapReduxStateToReactProps)(ChatRoomListScreen);
+function mapDispatchToProps(dispatch) {
+  return {
+    changeChattingRoomTitle: (title) => {
+      dispatch({ type: 'CHANGE_CHATTINGROOM_TITLE', payload: title });
+    },
+  };
+}
+
+export default connect(mapReduxStateToReactProps, mapDispatchToProps)(ChatRoomListScreen);

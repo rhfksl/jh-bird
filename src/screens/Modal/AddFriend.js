@@ -28,7 +28,7 @@ const AddFriend = ({ visible, setModalVisible, friends, user, changeFriendLists 
           alert('존재하지 않는 닉네임입니다');
         } else {
           changeFriendLists([res]);
-          onChangeText('');
+          setModalVisible(!visible);
         }
       })
       .catch((err) => console.log(err));

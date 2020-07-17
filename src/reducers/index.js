@@ -13,6 +13,7 @@ const initialState = {
   allMessages: {},
   currentChatRoomlists: [],
   hideBottomTab: true,
+  chattingRoomTitle: '',
 };
 
 const reducers = (state = initialState, action) => {
@@ -125,6 +126,12 @@ const reducers = (state = initialState, action) => {
       return {
         ...state,
         isSocketConnected: false,
+      };
+    }
+    case 'CHANGE_CHATTINGROOM_TITLE': {
+      return {
+        ...state,
+        chattingRoomTitle: action.payload,
       };
     }
     default:
