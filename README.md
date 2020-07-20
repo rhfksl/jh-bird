@@ -1,10 +1,10 @@
 
-# JH BIRDS: solo-project (간단한 채팅 기능 구현)
+# JH-BIRDS: solo-project
 
 * 솔로 프로젝트로 만든 간단한 채팅 기능을 가진 어플리케이션입니다.
  
 # github 주소
-* Front-end: 
+* Front-end: https://github.com/rhfksl/jh-bird
 * Back-end: https://github.com/rhfksl/jh-bird-server
  
 # 기술 스택
